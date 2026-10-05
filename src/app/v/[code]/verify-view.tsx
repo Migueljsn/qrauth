@@ -78,7 +78,7 @@ export function VerifyView({ code }: { code: string }) {
         {d.batch && (
           <p className="text-slate-500">
             Lote <b>{d.batch.number}</b>
-            {d.batch.expires_at && <> · Validade {new Date(d.batch.expires_at).toLocaleDateString("pt-BR")}</>}
+            {d.batch.expires_at && <> · Validade {new Date(d.batch.expires_at).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</>}
           </p>
         )}
         {d.custom_message && <p className="rounded-lg bg-slate-100 p-3">{d.custom_message}</p>}

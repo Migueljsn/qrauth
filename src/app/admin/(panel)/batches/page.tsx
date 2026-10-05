@@ -52,7 +52,7 @@ export default async function BatchesPage() {
             {(batches ?? []).map((b) => (
               <tr key={b.id}><td className="py-2 font-mono">{b.batch_number}</td>
                 <td>{(b.products as unknown as { name: string })?.name}</td><td>{b.quantity}</td>
-                <td>{b.expires_at ? new Date(b.expires_at).toLocaleDateString("pt-BR") : "—"}</td>
+                <td>{b.expires_at ? new Date(b.expires_at).toLocaleDateString("pt-BR", { timeZone: "UTC" }) : "—"}</td>
                 <td className="text-right">{canManage(staff.role) && <form action={deleteBatch}><input type="hidden" name="id" value={b.id} /><button className={btnDanger}>Excluir</button></form>}</td></tr>
             ))}
           </tbody>
