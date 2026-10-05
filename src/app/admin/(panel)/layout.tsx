@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AdminNav } from "@/components/admin-nav";
 import { requireStaff, canManage } from "@/lib/auth";
 import { logout } from "../login/actions";
 
@@ -19,11 +19,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div className="min-h-dvh bg-slate-100 text-slate-900 md:flex">
       <aside className="bg-[#2e2760] p-4 text-white md:min-h-dvh md:w-56">
         <p className="mb-4 text-lg font-extrabold">QRAuth</p>
-        <nav className="flex flex-wrap gap-1 md:flex-col">
-          {links.map(([href, label]) => (
-            <Link key={href} href={href} className="rounded-lg px-3 py-2 text-sm hover:bg-white/10">{label}</Link>
-          ))}
-        </nav>
+        <AdminNav links={links as [string, string][]} />
         <form action={logout} className="mt-6 border-t border-white/20 pt-3 text-xs">
           <p className="truncate">{staff.full_name || staff.email}</p>
           <p className="mb-2 text-white/60">{staff.role}</p>
