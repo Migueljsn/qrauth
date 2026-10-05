@@ -17,4 +17,5 @@ npm i && npm run dev
 ## Documentação
 - [`docs/MASTER.md`](docs/MASTER.md) — visão geral do produto / prompt para o Gamma
 - [`docs/SECURITY.md`](docs/SECURITY.md) — modelo de segurança
+- [`docs/CHECKLIST.md`](docs/CHECKLIST.md) — o que já foi feito e o que falta
 - [`docs/DEPLOY-EASYPANEL.md`](docs/DEPLOY-EASYPANEL.md) — deploy + Cloudflare
