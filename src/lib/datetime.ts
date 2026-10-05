@@ -23,3 +23,7 @@ export const todayBR = () => new Intl.DateTimeFormat("sv-SE", { timeZone: TZ }).
 
 export const fmtDateBR = (isoDate: string) => isoDate.split("-").reverse().join("/");
 export const fmtDateTimeBR = (d: Date) => d.toLocaleString("pt-BR", { timeZone: TZ, dateStyle: "short", timeStyle: "short" });
+
+/** Data e hora com segundos (ISO UTC → horário de Brasília), para históricos de leitura. */
+export const fmtDateTimeSecBR = (iso: string) =>
+  new Date(iso).toLocaleString("pt-BR", { timeZone: TZ, dateStyle: "short", timeStyle: "medium" });

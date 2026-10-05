@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { requireStaff, canManage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { toInputLocal } from "@/lib/datetime";
+import { toInputLocal, fmtDateTimeSecBR } from "@/lib/datetime";
 import { qrPayload, FLOW_LABEL, type QrFlow } from "@/lib/qr";
 import { Card, PageHead, Field, input, btn, btnDanger, btnGhost, Badge, statusTone } from "@/components/ui";
 import { LimitFields } from "@/components/limit-fields";
@@ -57,7 +57,7 @@ export default async function QrDetail({ params, searchParams }: { params: Promi
       </div>
       <Card title="Últimas leituras" className="mt-6">
         <ul className="divide-y text-sm">
-          {(scans ?? []).map((s) => <li key={s.id} className="flex justify-between py-2"><Badge tone={statusTone(s.result)}>{s.result}</Badge><span className="text-slate-400">{new Date(s.created_at).toLocaleString("pt-BR")}</span></li>)}
+          {(scans ?? []).map((s) => <li key={s.id} className="flex justify-between py-2"><Badge tone={statusTone(s.result)}>{s.result}</Badge><span className="text-slate-400">{fmtDateTimeSecBR(s.created_at)}</span></li>)}
           {!scans?.length && <li className="py-2 text-slate-400">Sem leituras.</li>}
         </ul>
       </Card>

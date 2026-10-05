@@ -1,3 +1,4 @@
+import { fmtDateTimeSecBR } from "@/lib/datetime";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, PageHead, Badge, statusTone } from "@/components/ui";
@@ -14,7 +15,7 @@ export default async function ScansPage() {
           <thead className="text-xs text-slate-500"><tr><th className="py-2">Código</th><th>Resultado</th><th>Quando</th></tr></thead>
           <tbody className="divide-y">
             {(data ?? []).map((s) => (
-              <tr key={s.id}><td className="py-2 font-mono">{s.code}</td><td><Badge tone={statusTone(s.result)}>{s.result}</Badge></td><td className="text-slate-500">{new Date(s.created_at).toLocaleString("pt-BR")}</td></tr>
+              <tr key={s.id}><td className="py-2 font-mono">{s.code}</td><td><Badge tone={statusTone(s.result)}>{s.result}</Badge></td><td className="text-slate-500">{fmtDateTimeSecBR(s.created_at)}</td></tr>
             ))}
           </tbody>
         </table>

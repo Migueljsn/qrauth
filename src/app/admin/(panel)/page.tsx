@@ -1,3 +1,4 @@
+import { fmtDateTimeSecBR } from "@/lib/datetime";
 import { createClient } from "@/lib/supabase/server";
 import { Card, PageHead, Badge, statusTone } from "@/components/ui";
 import { InfoTip } from "@/components/info-tip";
@@ -40,7 +41,7 @@ export default async function Dashboard() {
             <li key={e.id} className="flex items-center justify-between py-2">
               <span className="font-mono">{e.code}</span>
               <Badge tone={statusTone(e.result)}>{e.result}</Badge>
-              <span className="text-slate-400">{new Date(e.created_at).toLocaleString("pt-BR")}</span>
+              <span className="text-slate-400">{fmtDateTimeSecBR(e.created_at)}</span>
             </li>
           ))}
           {!recent?.length && <li className="py-2 text-slate-400">Nenhuma leitura ainda.</li>}
