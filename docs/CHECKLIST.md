@@ -8,6 +8,7 @@
 - [x] Cloudflare: domínio `clubeimpulso.com.br` ativo; registro `qr` → 76.13.161.147 (proxied); `@` e `www` em DNS only
 - [x] Cloudflare: Turnstile `qrauth` (hosts: qr.clubeimpulso.com.br e amevit-qrauth.hqzrjv.easypanel.host)
 - [x] Cloudflare: Bot Fight Mode ligado; rate limit `qrauth-verify-login` (15 req/10s por IP em /api/verify e /admin/login → bloqueio 10s)
+- [x] EasyPanel: domínios `qr.clubeimpulso.com.br` e `amevit-qrauth.hqzrjv.easypanel.host` (porta 3000); variáveis em `.env.easypanel` (local, fora do git). Mudou `NEXT_PUBLIC_*`? Precisa de build novo (um push no GitHub força).
 - [x] EasyPanel: fonte GitHub `Migueljsn/qrauth` (main) + build por Dockerfile
 
 ## Pendente
