@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export const btn = "rounded-lg bg-[#4a3f8a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#3b3270] disabled:opacity-50";
 export const btnGhost = "rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50";
 export const btnDanger = "rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700";
-export const input = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-[#4a3f8a] focus:outline-none";
+export const input = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-[#4a3f8a] focus:outline-none disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:placeholder:text-slate-300";
 
 export function Card({ title, children, className = "" }: { title?: string; children: ReactNode; className?: string }) {
   return (

@@ -22,7 +22,7 @@ export async function generateQr(fd: FormData) {
     p_product_id: p.product_id, p_batch_id: p.batch_id, p_kind: p.kind,
     p_quantity: p.kind === "batch" ? 1 : p.quantity, // QR de lote = 1 código para o lote todo
     p_max_scans: unlimited ? null : (p.max_scans ?? 1),
-    p_valid_until: p.valid_until ? new Date(p.valid_until).toISOString() : null,
+    p_valid_until: p.valid_until && fd.get("no_expiry") !== "on" ? new Date(p.valid_until).toISOString() : null,
     p_custom_message: p.custom_message, p_label_prefix: p.label_prefix,
   });
   if (error) redirect(`/admin/qr?error=${encodeURIComponent(error.message)}`);
@@ -41,7 +41,7 @@ export async function updateQr(fd: FormData) {
   const sb = await createClient();
   await sb.from("qr_codes").update({
     status: p.status, label: p.label, custom_message: p.custom_message,
-    valid_until: p.valid_until ? new Date(p.valid_until).toISOString() : null,
+    valid_until: p.valid_until && fd.get("no_expiry") !== "on" ? new Date(p.valid_until).toISOString() : null,
     max_scans: unlimited ? null : (p.max_scans ?? 1),
   }).eq("id", id);
   revalidatePath("/admin/qr");

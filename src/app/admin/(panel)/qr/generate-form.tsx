@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import { Field, input, btn } from "@/components/ui";
+import { LimitFields } from "@/components/limit-fields";
 import { generateQr } from "./actions";
 
 type Opt = { id: string; label: string; product_id?: string };
 
 export function GenerateForm({ products, batches }: { products: Opt[]; batches: Opt[] }) {
   const [kind, setKind] = useState<"batch" | "unit">("unit");
-  const [unlimited, setUnlimited] = useState(false);
   const [product, setProduct] = useState(products[0]?.id ?? "");
   return (
     <form action={generateQr} className="grid gap-3 md:grid-cols-3">
@@ -29,13 +29,7 @@ export function GenerateForm({ products, batches }: { products: Opt[]; batches: 
         </select>
       </Field>
       {kind === "unit" && <Field label="Quantidade de QR (máx. 10.000)"><input name="quantity" type="number" min={1} max={10000} defaultValue={10} className={input} /></Field>}
-      <Field label="Máx. de leituras" hint="Após esse número o QR é desativado">
-        <input name="max_scans" type="number" min={1} defaultValue={3} disabled={unlimited} className={input} />
-      </Field>
-      <label className="flex items-center gap-2 self-end pb-2 text-sm">
-        <input type="checkbox" name="unlimited" checked={unlimited} onChange={(e) => setUnlimited(e.target.checked)} /> Leituras ilimitadas
-      </label>
-      <Field label="Válido até (opcional)"><input name="valid_until" type="datetime-local" className={input} /></Field>
+      <LimitFields defaultMax={3} defaultValidUntil="" />
       <Field label="Prefixo do rótulo"><input name="label_prefix" placeholder="Caixa 3" className={input} /></Field>
       <Field label="Mensagem ao consumidor"><input name="custom_message" className={input} /></Field>
       <div className="md:col-span-3"><button className={btn}>Gerar QR Codes</button></div>

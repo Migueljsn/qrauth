@@ -4,6 +4,7 @@ import { requireStaff, canManage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { qrPayload } from "@/lib/qr";
 import { Card, PageHead, Field, input, btn, btnDanger, btnGhost, Badge, statusTone } from "@/components/ui";
+import { LimitFields } from "@/components/limit-fields";
 import { updateQr, deleteQr, resetScans } from "../actions";
 
 const toLocal = (iso: string | null) => (iso ? new Date(iso).toISOString().slice(0, 16) : "");
@@ -38,9 +39,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
               </select>
             </Field>
             <Field label="Rótulo"><input name="label" defaultValue={qr.label ?? ""} disabled={!can} className={input} /></Field>
-            <Field label={`Máx. leituras (lidas: ${qr.scan_count})`}><input name="max_scans" type="number" min={1} defaultValue={qr.max_scans ?? 3} disabled={!can} className={input} /></Field>
-            <label className="flex items-center gap-2 self-end pb-2 text-sm"><input type="checkbox" name="unlimited" defaultChecked={qr.max_scans === null} disabled={!can} /> Ilimitado</label>
-            <Field label="Válido até"><input name="valid_until" type="datetime-local" defaultValue={toLocal(qr.valid_until)} disabled={!can} className={input} /></Field>
+            <LimitFields defaultMax={qr.max_scans} defaultValidUntil={toLocal(qr.valid_until)} locked={!can} />
             <Field label="Mensagem ao consumidor"><input name="custom_message" defaultValue={qr.custom_message ?? ""} disabled={!can} className={input} /></Field>
             {can && <div className="md:col-span-2"><button className={btn}>Salvar</button></div>}
           </form>
