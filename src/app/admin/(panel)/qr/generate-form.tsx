@@ -18,10 +18,10 @@ export function GenerateForm({ products, batches }: { products: Opt[]; batches: 
           <option value="batch">Lote (1 QR para o lote inteiro)</option>
         </select>
       </Field>
-      <Field label="Fluxo de leitura" hint={flow === "camera" ? "QR grava só o código; valida só na câmera do site (use também o QR de entrada)" : "QR grava a URL; a câmera do celular já mostra o resultado"}>
+      <Field label="Fluxo de leitura" hint={flow === "camera" ? "1 QR: a câmera do celular abre o site; o cliente toca em Autenticar e lê o mesmo QR na câmera do site" : "1 QR: a câmera do celular já mostra o resultado"}>
         <select name="flow" value={flow} onChange={(e) => setFlow(e.target.value as "direct" | "camera")} className={input}>
-          <option value="camera">Com câmera do site (QR de entrada + QR único)</option>
-          <option value="direct">Direto (1 QR com link)</option>
+          <option value="camera">Com câmera do site (abre o site e lê de novo)</option>
+          <option value="direct">Direto (resultado ao ler)</option>
         </select>
       </Field>
       <Field label="Produto">

@@ -28,7 +28,6 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
   return (
     <>
       <PageHead title="QR Codes">
-        <Link href="/admin/qr/entry" className={btnGhost}>QR de entrada</Link>
         {sp.batch && <Link href={`/admin/qr/print?batch=${sp.batch}`} className={btn}>Imprimir lote</Link>}
       </PageHead>
       {sp.error && <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{sp.error}</p>}

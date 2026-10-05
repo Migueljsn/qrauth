@@ -3,27 +3,31 @@ export type QrFlow = "direct" | "camera";
 const siteBase = () => (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 
 /**
- * Conteúdo gravado no QR único:
- *  - direct: URL pública (a câmera nativa já abre o resultado);
- *  - camera: só o código (a câmera nativa mostra texto; só o scanner do site valida).
+ * Conteúdo gravado no QR (sempre 1 QR por unidade):
+ *  - direct: /v/CODE — a câmera nativa já mostra o resultado e conta a leitura;
+ *  - camera: /?c=CODE — a câmera nativa só abre o site (sem verificar nem contar leitura);
+ *    o cliente toca em Autenticar e a câmera do site lê o mesmo QR e valida.
  */
 export function qrPayload(code: string, flow: QrFlow = "direct") {
-  return flow === "camera" ? code : `${siteBase()}/v/${code}`;
+  return flow === "camera" ? `${siteBase()}/?c=${code}` : `${siteBase()}/v/${code}`;
 }
 
-/** QR de entrada (igual para todos os produtos): leva o cliente ao site, que abre a câmera de autenticação. */
-export const entryUrl = () => `${siteBase()}/`;
-
 export const FLOW_LABEL: Record<QrFlow, string> = {
-  direct: "Direto (1 QR)",
+  direct: "Direto",
   camera: "Com câmera do site",
 };
 
-/** Extrai o código de uma URL /v/CODE ou de um código cru. */
+/** Extrai o código de uma URL (/v/CODE ou ?c=CODE) ou de um código cru. */
 export function extractCode(raw: string): string | null {
   const text = raw.trim();
-  const m = text.match(/\/v\/([A-Za-z0-9]{6,32})\/?(?:[?#].*)?$/);
-  const code = (m ? m[1] : text).toUpperCase();
+  let candidate = text;
+  if (/^https?:\/\//i.test(text)) {
+    try {
+      const u = new URL(text);
+      candidate = u.searchParams.get("c") ?? u.pathname.match(/\/v\/([A-Za-z0-9]{6,32})\/?$/)?.[1] ?? "";
+    } catch { return null; }
+  }
+  const code = candidate.toUpperCase();
   return /^[A-Z0-9]{6,32}$/.test(code) ? code : null;
 }
 
