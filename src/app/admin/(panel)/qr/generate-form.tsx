@@ -4,11 +4,12 @@ import { Field, input, btn } from "@/components/ui";
 import { LimitFields } from "@/components/limit-fields";
 import { generateQr } from "./actions";
 
-type Opt = { id: string; label: string; product_id?: string };
+type Opt = { id: string; label: string; product_id?: string; expires_at?: string | null };
 
 export function GenerateForm({ products, batches }: { products: Opt[]; batches: Opt[] }) {
   const [kind, setKind] = useState<"batch" | "unit">("unit");
   const [flow, setFlow] = useState<"direct" | "camera">("camera");
+  const [batchId, setBatchId] = useState("");
   const [product, setProduct] = useState(products[0]?.id ?? "");
   return (
     <form action={generateQr} className="grid gap-3 md:grid-cols-3">
@@ -30,13 +31,13 @@ export function GenerateForm({ products, batches }: { products: Opt[]; batches: 
         </select>
       </Field>
       <Field label="Lote" hint="Obrigatório para QR unitário">
-        <select name="batch_id" required={kind === "unit"} className={input}>
+        <select name="batch_id" required={kind === "unit"} value={batchId} onChange={(e) => setBatchId(e.target.value)} className={input}>
           <option value="">—</option>
           {batches.filter((b) => b.product_id === product).map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}
         </select>
       </Field>
       {kind === "unit" && <Field label="Quantidade de QR (máx. 10.000)" hint="Padrão: 1 por vez"><input name="quantity" type="number" min={1} max={10000} defaultValue={1} className={input} /></Field>}
-      <LimitFields defaultMax={3} defaultValidUntil="" />
+      <LimitFields defaultMax={3} defaultValidUntil="" batchExpires={batches.find((b) => b.id === batchId)?.expires_at ?? null} />
       <Field label="Prefixo do rótulo"><input name="label_prefix" placeholder="Caixa 3" className={input} /></Field>
       <Field label="Mensagem ao consumidor"><input name="custom_message" className={input} /></Field>
       <div className="md:col-span-3"><button className={btn}>Gerar QR Codes</button></div>

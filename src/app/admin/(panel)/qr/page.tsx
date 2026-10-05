@@ -22,7 +22,7 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
   const [{ data: rows, count }, { data: products }, { data: batches }] = await Promise.all([
     q,
     sb.from("products").select("id, name").eq("active", true).order("name"),
-    sb.from("batches").select("id, batch_number, product_id").order("created_at", { ascending: false }),
+    sb.from("batches").select("id, batch_number, product_id, expires_at").order("created_at", { ascending: false }),
   ]);
 
   return (
@@ -35,7 +35,7 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
         <Card title="Gerar QR Codes">
           <GenerateForm
             products={(products ?? []).map((p) => ({ id: p.id, label: p.name }))}
-            batches={(batches ?? []).map((b) => ({ id: b.id, label: b.batch_number, product_id: b.product_id }))} />
+            batches={(batches ?? []).map((b) => ({ id: b.id, label: b.batch_number, product_id: b.product_id, expires_at: b.expires_at }))} />
         </Card>
       )}
       <Card className="mt-6">

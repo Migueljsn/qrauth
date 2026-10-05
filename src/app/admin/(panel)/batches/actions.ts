@@ -2,7 +2,9 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireRole, requireStaff } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { validateBatchDates } from "@/lib/validation";
 
 const date = z.string().optional().transform((v) => v || null);
 
@@ -13,6 +15,9 @@ export async function createBatch(fd: FormData) {
     manufactured_at: date, expires_at: date,
     quantity: z.coerce.number().int().min(0), notes: z.string().trim().max(500).optional(),
   }).parse(Object.fromEntries(fd));
+  const v = validateBatchDates(p.manufactured_at ?? "", p.expires_at ?? "");
+  const msg = v.manufactured ?? v.expires;
+  if (msg) redirect(`/admin/batches?error=${encodeURIComponent(msg)}`);
   const sb = await createClient();
   const { data: batch } = await sb.from("batches").insert({ ...p, notes: p.notes || null }).select("id").single();
   const { data: { user } } = await sb.auth.getUser();

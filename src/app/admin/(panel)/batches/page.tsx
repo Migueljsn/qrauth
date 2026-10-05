@@ -1,9 +1,11 @@
 import { requireStaff, canManage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, PageHead, Field, input, btn, btnDanger } from "@/components/ui";
-import { createBatch, deleteBatch, addMovement } from "./actions";
+import { deleteBatch, addMovement } from "./actions";
+import { BatchForm } from "./batch-form";
 
-export default async function BatchesPage() {
+export default async function BatchesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   const staff = await requireStaff();
   const sb = await createClient();
   const [{ data: products }, { data: batches }, { data: stock }, { data: moves }] = await Promise.all([
@@ -15,6 +17,7 @@ export default async function BatchesPage() {
   return (
     <>
       <PageHead title="Lotes & Estoque" />
+      {error && <p role="alert" className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">⚠ {error}</p>}
       <div className="grid gap-6 lg:grid-cols-2">
         <Card title="Estoque atual">
           <ul className="divide-y text-sm">
@@ -34,15 +37,7 @@ export default async function BatchesPage() {
       </div>
       {canManage(staff.role) && (
         <Card title="Novo lote" className="mt-6">
-          <form action={createBatch} className="grid gap-3 md:grid-cols-3">
-            <Field label="Produto"><select name="product_id" required className={input}>{(products ?? []).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></Field>
-            <Field label="Nº do lote"><input name="batch_number" required className={input} /></Field>
-            <Field label="Quantidade produzida"><input name="quantity" type="number" min={0} defaultValue={0} className={input} /></Field>
-            <Field label="Fabricação"><input name="manufactured_at" type="date" className={input} /></Field>
-            <Field label="Validade"><input name="expires_at" type="date" className={input} /></Field>
-            <Field label="Notas"><input name="notes" className={input} /></Field>
-            <button className={btn}>Criar lote</button>
-          </form>
+          <BatchForm products={products ?? []} />
         </Card>
       )}
       <Card title="Lotes" className="mt-6">
