@@ -1,7 +1,7 @@
 -- QRAuth — schema inicial
 -- Rode no SQL Editor do Supabase (ou via `supabase db push`).
 
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ───────────────────────── Tipos ─────────────────────────
 create type public.user_role as enum ('super_admin', 'admin', 'operator');
@@ -158,7 +158,7 @@ create or replace function public.random_code(len int default 10)
 returns text language plpgsql volatile as $$
 declare
   alphabet constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  bytes bytea := gen_random_bytes(len);
+  bytes bytea := extensions.gen_random_bytes(len);
   out text := '';
   i int;
 begin
