@@ -5,8 +5,12 @@
 - [x] Cadastro público (signup) desativado no Supabase Auth
 - [x] Super admin criado: `migueljsncc@gmail.com`
 - [x] Chaves do Supabase em `.env.local` (local, fora do git)
+- [x] Cloudflare: domínio `clubeimpulso.com.br` ativo; registro `qr` → 76.13.161.147 (proxied); `@` e `www` em DNS only
+- [x] Cloudflare: Turnstile `qrauth` (hosts: qr.clubeimpulso.com.br e amevit-qrauth.hqzrjv.easypanel.host)
+- [x] Cloudflare: Bot Fight Mode ligado; rate limit `qrauth-verify-login` (15 req/10s por IP em /api/verify e /admin/login → bloqueio 10s)
+- [x] EasyPanel: fonte GitHub `Migueljsn/qrauth` (main) + build por Dockerfile
 
-## Pendente (precisa de você)
+## Pendente
 1. **Trocar a senha do super admin** no primeiro login (painel → Usuários → sua linha → nova senha).
 2. **Cloudflare Turnstile:** dash.cloudflare.com → Turnstile → Add widget (Managed) para o domínio de produção. Copie *Site key* e *Secret key*.
 3. **EasyPanel:** criar serviço App a partir do GitHub `Migueljsn/qrauth` (Dockerfile). Preencher:
