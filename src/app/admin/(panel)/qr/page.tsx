@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireStaff, canManage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, PageHead, Badge, statusTone, btn, btnGhost, input } from "@/components/ui";
-import { STATUS_LABEL } from "@/lib/qr";
+import { STATUS_LABEL, FLOW_LABEL, type QrFlow } from "@/lib/qr";
 import { GenerateForm } from "./generate-form";
 
 const PAGE = 50;
@@ -14,7 +14,7 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
   const sb = await createClient();
 
   let q = sb.from("qr_codes")
-    .select("id, code, kind, label, scan_count, max_scans, status, products(name), batches(batch_number)", { count: "exact" })
+    .select("id, code, kind, flow, label, scan_count, max_scans, status, products(name), batches(batch_number)", { count: "exact" })
     .order("created_at", { ascending: false }).range((page - 1) * PAGE, page * PAGE - 1);
   if (sp.status) q = q.eq("status", sp.status);
   if (sp.batch) q = q.eq("batch_id", sp.batch);
@@ -28,6 +28,7 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
   return (
     <>
       <PageHead title="QR Codes">
+        <Link href="/admin/qr/entry" className={btnGhost}>QR de entrada</Link>
         {sp.batch && <Link href={`/admin/qr/print?batch=${sp.batch}`} className={btn}>Imprimir lote</Link>}
       </PageHead>
       {sp.error && <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{sp.error}</p>}
@@ -51,12 +52,12 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
           <button className={btnGhost}>Filtrar</button>
         </form>
         <table className="w-full text-left text-sm">
-          <thead className="text-xs text-slate-500"><tr><th className="py-2">Código</th><th>Tipo</th><th>Produto / Lote</th><th>Leituras</th><th>Status</th><th /></tr></thead>
+          <thead className="text-xs text-slate-500"><tr><th className="py-2">Código</th><th>Tipo / Fluxo</th><th>Produto / Lote</th><th>Leituras</th><th>Status</th><th /></tr></thead>
           <tbody className="divide-y">
             {(rows ?? []).map((r) => (
               <tr key={r.id}>
                 <td className="py-2 font-mono font-semibold">{r.code}</td>
-                <td>{r.kind === "batch" ? "Lote" : "Unitário"}</td>
+                <td>{r.kind === "batch" ? "Lote" : "Unitário"} · <span className="text-slate-500">{FLOW_LABEL[r.flow as QrFlow]}</span></td>
                 <td>{(r.products as unknown as { name: string })?.name} · {(r.batches as unknown as { batch_number: string } | null)?.batch_number ?? "—"}{r.label ? ` · ${r.label}` : ""}</td>
                 <td>{r.scan_count}/{r.max_scans ?? "∞"}</td>
                 <td><Badge tone={statusTone(r.status)}>{STATUS_LABEL[r.status]}</Badge></td>

@@ -1,8 +1,23 @@
-/** Conteúdo gravado no QR: URL pública. Funciona na câmera nativa e no scanner do site. */
-export function qrPayload(code: string) {
-  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
-  return `${base}/v/${code}`;
+export type QrFlow = "direct" | "camera";
+
+const siteBase = () => (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+
+/**
+ * Conteúdo gravado no QR único:
+ *  - direct: URL pública (a câmera nativa já abre o resultado);
+ *  - camera: só o código (a câmera nativa mostra texto; só o scanner do site valida).
+ */
+export function qrPayload(code: string, flow: QrFlow = "direct") {
+  return flow === "camera" ? code : `${siteBase()}/v/${code}`;
 }
+
+/** QR de entrada (igual para todos os produtos): leva o cliente ao site, que abre a câmera de autenticação. */
+export const entryUrl = () => `${siteBase()}/`;
+
+export const FLOW_LABEL: Record<QrFlow, string> = {
+  direct: "Direto (1 QR)",
+  camera: "Com câmera do site",
+};
 
 /** Extrai o código de uma URL /v/CODE ou de um código cru. */
 export function extractCode(raw: string): string | null {

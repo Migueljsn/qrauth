@@ -11,7 +11,7 @@ export async function generateQr(fd: FormData) {
   await requireRole("super_admin", "admin");
   const p = z.object({
     product_id: z.uuid(), batch_id: z.string().optional().transform((v) => v || null),
-    kind: z.enum(["batch", "unit"]), quantity: z.coerce.number().int().min(1).max(10000),
+    kind: z.enum(["batch", "unit"]), flow: z.enum(["direct", "camera"]).default("camera"), quantity: z.coerce.number().int().min(1).max(10000),
     max_scans: z.coerce.number().int().min(1).optional(),
     valid_until: optStr, custom_message: optStr, label_prefix: optStr,
   }).parse(Object.fromEntries(fd));
@@ -23,7 +23,7 @@ export async function generateQr(fd: FormData) {
     p_quantity: p.kind === "batch" ? 1 : p.quantity, // QR de lote = 1 código para o lote todo
     p_max_scans: unlimited ? null : (p.max_scans ?? 1),
     p_valid_until: p.valid_until && fd.get("no_expiry") !== "on" ? new Date(p.valid_until).toISOString() : null,
-    p_custom_message: p.custom_message, p_label_prefix: p.label_prefix,
+    p_custom_message: p.custom_message, p_label_prefix: p.label_prefix, p_flow: p.flow,
   });
   if (error) redirect(`/admin/qr?error=${encodeURIComponent(error.message)}`);
   revalidatePath("/admin/qr");

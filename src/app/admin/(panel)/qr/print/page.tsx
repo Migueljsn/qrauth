@@ -1,17 +1,17 @@
 import QRCode from "qrcode";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { qrPayload } from "@/lib/qr";
+import { qrPayload, type QrFlow } from "@/lib/qr";
 
 export default async function PrintPage({ searchParams }: { searchParams: Promise<{ batch?: string }> }) {
   await requireStaff();
   const { batch } = await searchParams;
   const sb = await createClient();
-  let q = sb.from("qr_codes").select("code, label").order("created_at").limit(2000);
+  let q = sb.from("qr_codes").select("code, label, flow").order("created_at").limit(2000);
   if (batch) q = q.eq("batch_id", batch);
   const { data } = await q;
   const items = await Promise.all((data ?? []).map(async (r) => ({
-    ...r, svg: await QRCode.toString(qrPayload(r.code), { type: "svg", margin: 1, errorCorrectionLevel: "M" }),
+    ...r, svg: await QRCode.toString(qrPayload(r.code, r.flow as QrFlow), { type: "svg", margin: 1, errorCorrectionLevel: "M" }),
   })));
   return (
     <div className="bg-white p-4 text-black">

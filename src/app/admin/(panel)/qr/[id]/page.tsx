@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { requireStaff, canManage } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { qrPayload } from "@/lib/qr";
+import { qrPayload, FLOW_LABEL, type QrFlow } from "@/lib/qr";
 import { Card, PageHead, Field, input, btn, btnDanger, btnGhost, Badge, statusTone } from "@/components/ui";
 import { LimitFields } from "@/components/limit-fields";
 import { updateQr, deleteQr, resetScans } from "../actions";
@@ -18,7 +18,8 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
     sb.from("scan_events").select("id, result, created_at").eq("qr_code_id", id).order("created_at", { ascending: false }).limit(20),
   ]);
   if (!qr) notFound();
-  const svg = await QRCode.toString(qrPayload(qr.code), { type: "svg", margin: 1, errorCorrectionLevel: "M" });
+  const flow = qr.flow as QrFlow;
+  const svg = await QRCode.toString(qrPayload(qr.code, flow), { type: "svg", margin: 1, errorCorrectionLevel: "M" });
   const can = canManage(staff.role);
 
   return (
@@ -27,7 +28,8 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
       <div className="grid gap-6 lg:grid-cols-[16rem_1fr]">
         <Card>
           <div className="w-full [&>svg]:h-auto [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
-          <p className="mt-2 break-all text-center font-mono text-xs">{qrPayload(qr.code)}</p>
+          <p className="mt-2 break-all text-center font-mono text-xs">{qrPayload(qr.code, flow)}</p>
+          <p className="mt-1 text-center text-xs text-slate-500">Fluxo: {FLOW_LABEL[flow]}</p>
           <p className="mt-2 text-center"><Badge tone={statusTone(qr.status)}>{qr.status}</Badge></p>
         </Card>
         <Card title="Configuração">

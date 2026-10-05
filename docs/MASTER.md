@@ -11,6 +11,11 @@ Produtos falsificados, principalmente em setores regulados (farmacêutico, cosm�
 ## A solução
 Cada produto (ou lote) recebe um QR Code com **código único**. O consumidor lê pelo celular, o site abre a câmera de autenticação e informa em segundos se o produto é **autêntico** (com dados do produto e do lote) ou **não autêntico**.
 
+## Dois fluxos de leitura (escolhidos ao gerar o QR)
+- **Com câmera do site (padrão):** *QR de entrada* (igual em todos os produtos; abre o site com o botão Autenticar) + *QR único* (só o código; só a câmera do site valida). Exige leitura ao vivo do QR físico e dificulta autenticar por foto.
+- **Direto:** o QR único grava a URL; a câmera do celular já mostra o resultado.
+- O painel gera, baixa e imprime o QR de entrada (QR Codes → QR de entrada).
+
 ## Fluxo do consumidor
 1. Lê o QR institucional (ou o do produto) com a câmera do celular → abre o site.
 2. Toca em **Autenticar** → câmera do site com guia de enquadramento e lanterna.
